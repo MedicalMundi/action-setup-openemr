@@ -99,7 +99,7 @@ runs:
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
 
-    - name: Install dependencies
-      run: |
-        composer install ${{ inputs.composer-install-args }}
-      shell: bash
+#    - name: Install dependencies
+#      run: |
+#        composer install ${{ inputs.composer-install-args }}
+#      shell: bash
