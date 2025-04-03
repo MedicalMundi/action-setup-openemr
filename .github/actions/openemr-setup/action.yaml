@@ -6,9 +6,9 @@ inputs:
   php-version:
     description: ''
     required: true
-#  openemr-version:
-#    description: 'Openemr version'
-#    required: true
+  openemr-version:
+    description: 'Openemr version'
+    required: true
   #################################################################
   # Everything below this line is optional.
   #

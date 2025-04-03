@@ -29,7 +29,7 @@ jobs:
         uses: './.github/actions/openemr-setup'
         with:
           php-version: ${{ matrix.php-version }}
-          #openemr-version: ${{ matrix.openemr-version }}
+          openemr-version: ${{ matrix.openemr-version }}
 
 #      - name: show composer info
 #        run: composer info
