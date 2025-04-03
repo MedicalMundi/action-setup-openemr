@@ -61,31 +61,31 @@ runs:
 #        echo $GITHUB_PATH
 #      shell: bash
 
-    - name: Use PHP
-      uses: shivammathur/setup-php@2.32.0
-      with:
-        php-version: ${{ inputs.php-version }}
-        tools: composer, ${{ inputs.tools }}
-        coverage: ${{ inputs.coverage }}
-        ini-values: ${{ inputs.ini-values }}
-
-    - name: Set Composer Cache Directory
-      if: ${{ inputs.use-composer-cache }}
-      id: composer-cache
-      shell: bash
-      run: |
-        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@v4
-      if: ${{ inputs.use-composer-cache }}
-      with:
-        path: |
-          ${{ steps.composer-cache.outputs.dir }}
-          vendor
-        key: composer-deps-${{ runner.os }}-php-${{ inputs.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          composer-deps-${{ runner.os }}-php-${{ inputs.php-version }}-composer-
+#    - name: Use PHP
+#      uses: shivammathur/setup-php@2.32.0
+#      with:
+#        php-version: ${{ inputs.php-version }}
+#        tools: composer, ${{ inputs.tools }}
+#        coverage: ${{ inputs.coverage }}
+#        ini-values: ${{ inputs.ini-values }}
+#
+#    - name: Set Composer Cache Directory
+#      if: ${{ inputs.use-composer-cache }}
+#      id: composer-cache
+#      shell: bash
+#      run: |
+#        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+#
+#    - name: Cache Composer dependencies
+#      uses: actions/cache@v4
+#      if: ${{ inputs.use-composer-cache }}
+#      with:
+#        path: |
+#          ${{ steps.composer-cache.outputs.dir }}
+#          vendor
+#        key: composer-deps-${{ runner.os }}-php-${{ inputs.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
+#        restore-keys: |
+#          composer-deps-${{ runner.os }}-php-${{ inputs.php-version }}-composer-
 
 #    - name: Clone openEmr tag ${{ inputs.openemr-version }}
 #      uses: actions/checkout@v4
@@ -98,6 +98,10 @@ runs:
       shell: bash
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
+
+    - name: List files
+      run: ls -al
+      shell: bash
 
 #    - name: Install dependencies
 #      run: |
