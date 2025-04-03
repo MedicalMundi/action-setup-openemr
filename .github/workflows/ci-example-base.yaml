@@ -1,0 +1,38 @@
+name: CI example base
+
+on: [ push, workflow_dispatch ]
+
+jobs:
+  base-example:
+    name: Base example ${{ matrix.php-version }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php-version:
+          - '8.1'
+          - '8.2'
+        openemr-version:
+          - 'master'
+      fail-fast: false
+    steps:
+      - name: My first step - check out repository
+        uses: actions/checkout@v4
+
+      - name: Clone openEmr tag ${{ inputs.openemr-version }}
+        uses: actions/checkout@v4
+        with:
+          repository: openemr/openemr
+          ref: ${{ matrix.openemr-version }}
+
+      - name: Setup PHP and composer dependencies
+        uses: './.github/actions/openemr-setup'
+        with:
+          php-version: ${{ matrix.php-version }}
+          #openemr-version: ${{ matrix.openemr-version }}
+
+#      - name: show composer info
+#        run: composer info
+
+      - name: List files
+        run: ls -al

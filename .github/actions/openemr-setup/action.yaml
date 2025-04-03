@@ -1,0 +1,105 @@
+name: Openemr setup
+
+description: 'Sets up openemr and composer dependencies'
+
+inputs:
+  php-version:
+    description: ''
+    required: true
+#  openemr-version:
+#    description: 'Openemr version'
+#    required: true
+  #################################################################
+  # Everything below this line is optional.
+  #
+  # It's designed to make the setup a reasonably standard
+  # codebase "just work," though there may be speed gains to be had
+  # by tweaking these flags.
+  #################################################################
+  ini-values:
+    description: 'php ini values'
+    required: false
+    default: ''
+  coverage:
+    description: 'php coverage conf. (pcov|xdebug|none)'
+    required: false
+    default: 'none'
+  # Full tools list
+  # @see https://github.com/shivammathur/setup-php?tab=readme-ov-file#wrench-tools-support
+  tools:
+    description: 'enable tools, composer is always enabled. ( composer-normalize:2.16.0, churn, composer-unused, ... )'
+    required: false
+    default: ''
+  use-composer-cache:
+    description: 'Enable or disable cache for composer dependencies'
+    required: false
+    default: 'false'
+  composer-install-args:
+    description: 'Arguments string for composer install command'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # This step checks out a copy of your repository.
+#    - name: My first step - check out repository
+#      uses: actions/checkout@v4
+
+#    - name: Set GitHub Path
+#      id: github-path
+#      run: echo "path=($GITHUB_ACTION_PATH)" >> $GITHUB_PATH
+#      shell: bash
+#      env:
+#        GITHUB_ACTION_PATH: ${{ github.action_path }}
+#
+#
+#    - name: Show GitHub Path
+#      #if: github-path
+#      run: |
+#        echo ${{ steps.github-path.outputs.path }}
+#        echo $GITHUB_PATH
+#      shell: bash
+
+    - name: Use PHP
+      uses: shivammathur/setup-php@2.32.0
+      with:
+        php-version: ${{ inputs.php-version }}
+        tools: composer, ${{ inputs.tools }}
+        coverage: ${{ inputs.coverage }}
+        ini-values: ${{ inputs.ini-values }}
+
+    - name: Set Composer Cache Directory
+      if: ${{ inputs.use-composer-cache }}
+      id: composer-cache
+      shell: bash
+      run: |
+        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      if: ${{ inputs.use-composer-cache }}
+      with:
+        path: |
+          ${{ steps.composer-cache.outputs.dir }}
+          vendor
+        key: composer-deps-${{ runner.os }}-php-${{ inputs.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          composer-deps-${{ runner.os }}-php-${{ inputs.php-version }}-composer-
+
+#    - name: Clone openEmr tag ${{ inputs.openemr-version }}
+#      uses: actions/checkout@v4
+#      with:
+#        repository: openemr/openemr
+#        ref: ${{ inputs.openemr-version }}
+#
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
+    - name: Install dependencies
+      run: |
+        composer install ${{ inputs.composer-install-args }}
+      shell: bash
