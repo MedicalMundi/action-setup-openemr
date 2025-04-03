@@ -1,6 +1,6 @@
 name: CI example base
 
-on: [ push, workflow_dispatch ]
+on: [ push ]
 
 jobs:
   base-example:
